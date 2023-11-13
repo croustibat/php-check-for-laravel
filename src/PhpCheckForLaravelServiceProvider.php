@@ -2,9 +2,9 @@
 
 namespace Croustibat\PhpCheckForLaravel;
 
+use Croustibat\PhpCheckForLaravel\Commands\PhpCheckCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Croustibat\PhpCheckForLaravel\Commands\PhpCheckCommand;
 
 class PhpCheckForLaravelServiceProvider extends PackageServiceProvider
 {
