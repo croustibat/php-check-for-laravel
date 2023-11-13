@@ -60,14 +60,12 @@ class PhpCheckCommand extends Command
             return self::SUCCESS;
         }
 
-        if ($confirmed) {
-            $cmd = 'composer require -W '.$selected->implode(' ');
-            info($cmd);
-            spin(
-                fn () => self::runCmd($cmd),
-                'Updating ...'
-            );
-        }
+        $cmd = 'composer require -W '.$selected->implode(' ');
+        info($cmd);
+        spin(
+            fn () => self::runCmd($cmd),
+            'Updating ...'
+        );
 
         info('✅ Done!');
 
