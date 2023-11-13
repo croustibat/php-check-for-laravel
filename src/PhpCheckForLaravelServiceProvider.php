@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace Croustibat\PhpCheckForLaravel;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
+use Croustibat\PhpCheckForLaravel\Commands\PhpCheckCommand;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class PhpCheckForLaravelServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -16,10 +16,7 @@ class SkeletonServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('skeleton')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_skeleton_table')
-            ->hasCommand(SkeletonCommand::class);
+            ->name('php-check-for-laravel')
+            ->hasCommand(PhpCheckCommand::class);
     }
 }
