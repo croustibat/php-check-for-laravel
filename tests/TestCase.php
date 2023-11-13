@@ -2,9 +2,9 @@
 
 namespace Croustibat\PhpCheckForLaravel\Tests;
 
+use Croustibat\PhpCheckForLaravel\PhpCheckForLaravelServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Croustibat\PhpCheckForLaravel\PhpCheckForLaravelServiceProvider;
 
 class TestCase extends Orchestra
 {

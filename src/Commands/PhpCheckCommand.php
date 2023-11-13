@@ -4,7 +4,11 @@ namespace Croustibat\PhpCheckForLaravel\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Process;
-use function Laravel\Prompts\{multiselect, spin, info, confirm};
+
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\info;
+use function Laravel\Prompts\multiselect;
+use function Laravel\Prompts\spin;
 
 class PhpCheckCommand extends Command
 {
@@ -12,14 +16,11 @@ class PhpCheckCommand extends Command
 
     public $description = 'Interactive check for outdated composer package';
 
-    /**
-     * @return int
-     */
     public function handle(): int
     {
         // main composer command, maybe we can add more later...
         $cmd = [
-            'composer outdated --no-dev --direct --format=json'
+            'composer outdated --no-dev --direct --format=json',
         ];
 
         $outdated = spin(
@@ -28,15 +29,17 @@ class PhpCheckCommand extends Command
 
                 if (isset($packagesList['installed'])) {
                     return collect($packagesList['installed'])->flatMap(function ($package) {
-                        $semver = match($package['latest-status']) {
+                        $semver = match ($package['latest-status']) {
                             'update-possible' => 'Major',
                             'semver-safe-update' => 'Minor',
                             default => 'Patch'
                         };
-                        $label = $package['name'] . ' ' . $package['version'] . ' -> ' . $package['latest']. ' ('.$semver.')';
+                        $label = $package['name'].' '.$package['version'].' -> '.$package['latest'].' ('.$semver.')';
+
                         return [$package['name'].':'.str($package['latest'])->remove('v') => $label];
                     })->toArray();
                 }
+
                 return false;
             }),
             '🚀 Checking for outdated packages...'
@@ -48,20 +51,21 @@ class PhpCheckCommand extends Command
             scroll: 10
         ));
 
-        info("You are going to update: " . $selected->implode(', '));
+        info('You are going to update: '.$selected->implode(', '));
         $confirmed = confirm('Are you sure?');
 
-        if (!$confirmed) {
+        if (! $confirmed) {
             info('❌ Aborting... nothing has been updated');
+
             return self::SUCCESS;
         }
 
         if ($confirmed) {
-            $cmd = 'composer require -W ' . $selected->implode(' ');
+            $cmd = 'composer require -W '.$selected->implode(' ');
             info($cmd);
             spin(
                 fn () => self::runCmd($cmd),
-                "Updating ..."
+                'Updating ...'
             );
         }
 
@@ -70,19 +74,15 @@ class PhpCheckCommand extends Command
         return self::SUCCESS;
     }
 
-    /**
-     * @param string $cmd
-     * @return string
-     */
     public static function runCmd(string $cmd): string
     {
         $result = Process::run($cmd);
 
-        if ($result->failed())
+        if ($result->failed()) {
             return $result->errorOutput();
+        }
 
         return $result->output();
 
     }
-
 }
