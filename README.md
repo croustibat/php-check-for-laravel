@@ -8,6 +8,7 @@
 
 This is a Laravel package to check for outdated composer dependencies. 
 
+![9d37a9cf-4a40-4461-8c4c-bcd30f6c803b](https://github.com/croustibat/php-check-for-laravel/assets/1169456/9b97579e-6829-4729-8611-3428aae5c60d)
 
 ## Installation
 
