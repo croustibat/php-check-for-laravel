@@ -1,0 +1,360 @@
+@import 'tailwindcss';
+@import '../../vendor/livewire/flux/dist/flux.css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+    --color-zinc-50: #fafafa;
+    --color-zinc-100: #f5f5f5;
+    --color-zinc-200: #e5e5e5;
+    --color-zinc-300: #d4d4d4;
+    --color-zinc-400: #a3a3a3;
+    --color-zinc-500: #737373;
+    --color-zinc-600: #525252;
+    --color-zinc-700: #404040;
+    --color-zinc-800: #262626;
+    --color-zinc-900: #171717;
+    --color-zinc-950: #0a0a0a;
+
+    --color-accent: var(--color-neutral-800);
+    --color-accent-content: var(--color-neutral-800);
+    --color-accent-foreground: var(--color-white);
+
+    /* Mission Control Colors */
+    --color-mc-purple: oklch(0.55 0.25 285);
+    --color-mc-pink: oklch(0.65 0.25 350);
+    --color-mc-fuchsia: oklch(0.70 0.30 320);
+
+    /* Animations */
+    --animate-gradient: gradient 3s ease infinite;
+    --animate-glow: glow 2s ease-in-out infinite alternate;
+    --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes glow {
+        0% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
+        100% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.5); }
+    }
+
+    @keyframes pulse-dot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+}
+
+@layer theme {
+    .dark {
+        --color-accent: var(--color-white);
+        --color-accent-content: var(--color-white);
+        --color-accent-foreground: var(--color-neutral-800);
+    }
+}
+
+@layer base {
+
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+[data-flux-field]:not(ui-radio, ui-checkbox) {
+    @apply grid gap-2;
+}
+
+[data-flux-label] {
+    @apply  !mb-0 !leading-tight;
+}
+
+input:focus[data-flux-control],
+textarea:focus[data-flux-control],
+select:focus[data-flux-control] {
+    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+}
+
+/* \[:where(&)\]:size-4 {
+    @apply size-4;
+} */
+
+/* ================================
+   Mission Control - Liquid Glass Design System
+   ================================ */
+
+/* Mission Control Background */
+.mc-background {
+    background: radial-gradient(ellipse at top left, rgba(168, 85, 247, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(236, 72, 153, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at center, rgba(88, 28, 135, 0.2) 0%, transparent 70%),
+                linear-gradient(180deg, #1e1033 0%, #0f0a1a 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Glass Panel */
+.glass {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) brightness(1.05) saturate(1.3);
+    -webkit-backdrop-filter: blur(20px) brightness(1.05) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+}
+
+.glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Project Card */
+.project-card {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) brightness(1.05) saturate(1.3);
+    -webkit-backdrop-filter: blur(20px) brightness(1.05) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-4px) scale(1.02);
+}
+
+.project-card:hover .card-icon {
+    transform: scale(1.15) rotate(5deg);
+}
+
+.card-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 3rem;
+    opacity: 0.8;
+    filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
+    transition: transform 0.3s ease;
+}
+
+/* Status Gradients */
+.status-gradient-active {
+    position: absolute;
+    inset: 0;
+    opacity: 0.6;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.4) 0%, rgba(20, 184, 166, 0.3) 50%, rgba(6, 182, 212, 0.2) 100%);
+    pointer-events: none;
+}
+
+.status-gradient-blocked {
+    position: absolute;
+    inset: 0;
+    opacity: 0.6;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.4) 0%, rgba(249, 115, 22, 0.3) 50%, rgba(244, 63, 94, 0.2) 100%);
+    pointer-events: none;
+}
+
+.status-gradient-idle {
+    position: absolute;
+    inset: 0;
+    opacity: 0.6;
+    background: linear-gradient(135deg, rgba(100, 116, 139, 0.3) 0%, rgba(71, 85, 105, 0.2) 50%, rgba(51, 65, 85, 0.1) 100%);
+    pointer-events: none;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge-active {
+    background: rgba(16, 185, 129, 0.3);
+    color: rgb(110, 231, 183);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.status-badge-blocked {
+    background: rgba(245, 158, 11, 0.3);
+    color: rgb(252, 211, 77);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+.status-badge-idle {
+    background: rgba(100, 116, 139, 0.3);
+    color: rgb(148, 163, 184);
+}
+
+/* Status Dots */
+.status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+}
+
+.status-dot-active {
+    background: rgb(52, 211, 153);
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.status-dot-blocked {
+    background: rgb(251, 191, 36);
+}
+
+.status-dot-idle {
+    background: rgb(148, 163, 184);
+}
+
+/* Primary Button */
+.btn-primary {
+    padding: 1rem 2.5rem;
+    border-radius: 9999px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+    background: linear-gradient(90deg, #d946ef, #a855f7, #d946ef);
+    background-size: 200% 200%;
+    animation: gradient 3s ease infinite;
+    box-shadow: 0 0 40px rgba(217, 70, 239, 0.5);
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 60px rgba(217, 70, 239, 0.7);
+}
+
+/* Card Action Button */
+.btn-card {
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-card:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Git Branch Tag */
+.git-branch {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+/* Sidebar */
+.sidebar-item {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.sidebar-item-active {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.sidebar-item:not(.sidebar-item-active) {
+    opacity: 0.6;
+}
+
+.sidebar-item:not(.sidebar-item-active):hover {
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 1;
+}
+
+/* Notification Badge */
+.notification-badge {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    animation: glow 2s ease-in-out infinite alternate;
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Noise Overlay */
+.noise-overlay {
+    position: fixed;
+    inset: 0;
+    opacity: 0.03;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Bottom Blur Effect */
+.bottom-blur {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8rem;
+    background: linear-gradient(to top, rgba(15, 10, 26, 0.9), transparent);
+    pointer-events: none;
+}
