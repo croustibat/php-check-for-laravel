@@ -13,6 +13,17 @@ class Sidebar extends Component
 
     public string $activeItem = 'dashboard';
 
+    public function mount(): void
+    {
+        // Detect active item from current route
+        $route = request()->route()?->getName() ?? '';
+
+        $this->activeItem = match (true) {
+            str_contains($route, 'statistics') => 'stats',
+            default => 'dashboard',
+        };
+    }
+
     #[On('blockedCountUpdated')]
     public function updateBlockedCount(int $count): void
     {

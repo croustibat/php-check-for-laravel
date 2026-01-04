@@ -358,3 +358,17 @@ select:focus[data-flux-control] {
     background: linear-gradient(to top, rgba(15, 10, 26, 0.9), transparent);
     pointer-events: none;
 }
+
+/* Animation Utilities */
+.animate-pulse-dot {
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+.animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 3s ease infinite;
+}

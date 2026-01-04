@@ -36,7 +36,7 @@ return [
     ],
 
     'claude' => [
-        'data_path' => env('CLAUDE_DATA_PATH', ($_SERVER['HOME'] ?? '/tmp') . '/.claude'),
+        'data_path' => env('CLAUDE_DATA_PATH', ($_SERVER['HOME'] ?? '/tmp').'/.claude'),
     ],
 
 ];

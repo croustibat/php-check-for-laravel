@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\DTOs\Project;
+use App\Services\ActiveSessionDetector;
 use App\Services\StatusDetector;
 use Carbon\Carbon;
 
@@ -15,7 +16,12 @@ test('detects idle status when no recent activity', function () {
         lastActivity: Carbon::now()->subHours(3),
     );
 
-    $detector = new StatusDetector;
+    $mockSessionDetector = Mockery::mock(ActiveSessionDetector::class);
+    $mockSessionDetector->shouldReceive('getSessionForProject')
+        ->with('/Users/test/myapp')
+        ->andReturn(null);
+
+    $detector = new StatusDetector($mockSessionDetector);
 
     expect($detector->detect($project))->toBe('idle');
 });
@@ -31,7 +37,12 @@ test('detects blocked status when last message is assistant with question', func
         lastMessageType: 'assistant',
     );
 
-    $detector = new StatusDetector;
+    $mockSessionDetector = Mockery::mock(ActiveSessionDetector::class);
+    $mockSessionDetector->shouldReceive('getSessionForProject')
+        ->with('/Users/test/myapp')
+        ->andReturn(null);
+
+    $detector = new StatusDetector($mockSessionDetector);
 
     expect($detector->detect($project))->toBe('blocked');
 });
@@ -45,35 +56,72 @@ test('detects active status when claude process is running', function () {
         lastActivity: Carbon::now()->subMinutes(5),
     );
 
-    $detector = new StatusDetector;
-    $detector->setActiveProcessPaths(['/Users/test/myapp']);
+    $mockSessionDetector = Mockery::mock(ActiveSessionDetector::class);
+    $mockSessionDetector->shouldReceive('getSessionForProject')
+        ->with('/Users/test/myapp')
+        ->andReturn([
+            'pid' => 12345,
+            'tty' => 'ttys001',
+            'cwd' => '/Users/test/myapp',
+            'terminal' => 'warp',
+            'status' => 'idle',
+            'command' => 'opencode',
+        ]);
+
+    $detector = new StatusDetector($mockSessionDetector);
 
     expect($detector->detect($project))->toBe('active');
 });
 
-test('detects blocked patterns in messages', function () {
+test('detects running status when process is actively working', function () {
+    $project = new Project(
+        id: 'test',
+        name: 'myapp',
+        path: '/Users/test/myapp',
+        claudeDataPath: '/tmp/test',
+        lastActivity: Carbon::now()->subMinutes(1),
+    );
+
+    $mockSessionDetector = Mockery::mock(ActiveSessionDetector::class);
+    $mockSessionDetector->shouldReceive('getSessionForProject')
+        ->with('/Users/test/myapp')
+        ->andReturn([
+            'pid' => 12345,
+            'tty' => 'ttys001',
+            'cwd' => '/Users/test/myapp',
+            'terminal' => 'warp',
+            'status' => 'running',
+            'command' => 'claude',
+        ]);
+
+    $detector = new StatusDetector($mockSessionDetector);
+
+    expect($detector->detect($project))->toBe('running');
+});
+
+test('detects asking permission patterns in messages', function () {
     $detector = new StatusDetector;
 
-    $blockedMessages = [
+    $askingMessages = [
         'Would you like me to continue?',
         'Should I proceed with this?',
         'What do you think?',
         'Please confirm before I make changes.',
     ];
 
-    foreach ($blockedMessages as $message) {
-        expect($detector->isBlockedMessage($message, 'assistant'))->toBeTrue();
+    foreach ($askingMessages as $message) {
+        expect($detector->isAskingPermission($message, 'assistant'))->toBeTrue();
     }
 });
 
-test('does not detect blocked for user messages', function () {
+test('does not detect asking permission for user messages', function () {
     $detector = new StatusDetector;
 
-    expect($detector->isBlockedMessage('Would you like me to continue?', 'user'))->toBeFalse();
+    expect($detector->isAskingPermission('Would you like me to continue?', 'user'))->toBeFalse();
 });
 
-test('does not detect blocked for null message', function () {
+test('does not detect asking permission for null message', function () {
     $detector = new StatusDetector;
 
-    expect($detector->isBlockedMessage(null, 'assistant'))->toBeFalse();
+    expect($detector->isAskingPermission(null, 'assistant'))->toBeFalse();
 });

@@ -3,9 +3,20 @@
 declare(strict_types=1);
 
 use App\Livewire\ProjectList;
+use App\Services\ActiveSessionDetector;
 use App\Services\ClaudeDataReader;
-use Illuminate\Support\Collection;
+use App\Services\StatusDetector;
 use Livewire\Livewire;
+
+beforeEach(function () {
+    $this->mock(ActiveSessionDetector::class, function ($mock) {
+        $mock->shouldReceive('getActiveSessions')->andReturn(collect());
+    });
+
+    $this->mock(StatusDetector::class, function ($mock) {
+        $mock->shouldReceive('detect')->andReturn('idle');
+    });
+});
 
 test('project list component renders', function () {
     $this->mock(ClaudeDataReader::class, function ($mock) {

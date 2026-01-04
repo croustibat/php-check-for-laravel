@@ -1,60 +1,58 @@
-<aside class="glass fixed left-4 top-1/2 -translate-y-1/2 p-3 flex flex-col items-center gap-4 z-50">
+<aside class="w-16 flex flex-col items-center py-6 gap-2 relative z-10">
     {{-- App Icon --}}
-    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg mb-2">
+    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600
+                flex items-center justify-center text-white text-lg font-bold
+                shadow-lg mb-6" style="box-shadow: 0 8px 24px rgba(192, 38, 211, 0.4);">
         M
     </div>
 
     {{-- Nav Items --}}
-    <nav class="flex flex-col gap-2">
-        <button
-            class="sidebar-item {{ $activeItem === 'dashboard' ? 'sidebar-item-active' : '' }}"
-            title="Dashboard"
-        >
-            <span>{{ config('mission-control.icons.dashboard', '🎛️') }}</span>
-        </button>
+    <a href="{{ route('mission-control') }}"
+        class="w-10 h-10 rounded-xl flex items-center justify-center text-xl {{ $activeItem === 'dashboard' ? 'bg-white/15 shadow-lg' : 'hover:bg-white/10 opacity-60 hover:opacity-100 transition-all' }}"
+        title="Dashboard"
+    >
+        🎛️
+    </a>
+    <button
+        class="w-10 h-10 rounded-xl flex items-center justify-center text-xl {{ $activeItem === 'projects' ? 'bg-white/15 shadow-lg' : 'hover:bg-white/10 opacity-60 hover:opacity-100 transition-all' }}"
+        title="Projects"
+    >
+        📁
+    </button>
+    <button
+        class="w-10 h-10 rounded-xl flex items-center justify-center text-xl {{ $activeItem === 'active' ? 'bg-white/15 shadow-lg' : 'hover:bg-white/10 opacity-60 hover:opacity-100 transition-all' }}"
+        title="Active"
+    >
+        ⚡
+    </button>
+    <button
+        class="w-10 h-10 rounded-xl flex items-center justify-center text-xl {{ $activeItem === 'waiting' ? 'bg-white/15 shadow-lg' : 'hover:bg-white/10 opacity-60 hover:opacity-100 transition-all' }}"
+        title="Waiting"
+    >
+        ⏳
+    </button>
+    <a href="{{ route('mission-control.statistics') }}"
+        class="w-10 h-10 rounded-xl flex items-center justify-center text-xl {{ $activeItem === 'stats' ? 'bg-white/15 shadow-lg' : 'hover:bg-white/10 opacity-60 hover:opacity-100 transition-all' }}"
+        title="Stats"
+    >
+        📊
+    </a>
+    <button
+        class="w-10 h-10 rounded-xl flex items-center justify-center text-xl {{ $activeItem === 'settings' ? 'bg-white/15 shadow-lg' : 'hover:bg-white/10 opacity-60 hover:opacity-100 transition-all' }}"
+        title="Settings"
+    >
+        ⚙️
+    </button>
 
-        <button
-            class="sidebar-item {{ $activeItem === 'projects' ? 'sidebar-item-active' : '' }}"
-            title="Projects"
-        >
-            <span>{{ config('mission-control.icons.projects', '📁') }}</span>
-        </button>
-
-        <button
-            class="sidebar-item {{ $activeItem === 'active' ? 'sidebar-item-active' : '' }}"
-            title="Active Sessions"
-        >
-            <span>{{ config('mission-control.icons.active', '⚡') }}</span>
-        </button>
-
-        <button
-            class="sidebar-item {{ $activeItem === 'history' ? 'sidebar-item-active' : '' }}"
-            title="History"
-        >
-            <span>{{ config('mission-control.icons.history', '⏳') }}</span>
-        </button>
-
-        <button
-            class="sidebar-item {{ $activeItem === 'stats' ? 'sidebar-item-active' : '' }}"
-            title="Statistics"
-        >
-            <span>{{ config('mission-control.icons.stats', '📊') }}</span>
-        </button>
-
-        <button
-            class="sidebar-item {{ $activeItem === 'settings' ? 'sidebar-item-active' : '' }}"
-            title="Settings"
-        >
-            <span>{{ config('mission-control.icons.settings', '⚙️') }}</span>
-        </button>
-    </nav>
+    <div class="flex-1"></div>
 
     {{-- Blocked Count Badge --}}
     @if ($blockedCount > 0)
-        <div class="mt-auto pt-4">
-            <div class="notification-badge" title="{{ $blockedCount }} sessions waiting">
-                {{ $blockedCount }}
-            </div>
-        </div>
+        <a href="{{ route('mission-control') }}"
+           class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500
+                    flex items-center justify-center text-xs font-bold text-white animate-glow"
+           title="{{ $blockedCount }} sessions waiting">
+            {{ $blockedCount }}
+        </a>
     @endif
 </aside>

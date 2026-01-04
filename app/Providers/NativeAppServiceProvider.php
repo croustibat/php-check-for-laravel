@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use Native\Desktop\Contracts\ProvidesPhpIni;
-use Native\Desktop\Facades\Menu;
-use Native\Desktop\Facades\MenuBar;
+use Native\Desktop\Facades\Window;
 
 class NativeAppServiceProvider implements ProvidesPhpIni
 {
@@ -16,23 +15,17 @@ class NativeAppServiceProvider implements ProvidesPhpIni
      */
     public function boot(): void
     {
-        MenuBar::create()
+        Window::open()
             ->route('mission-control')
-            ->width(900)
-            ->height(700)
-            ->resizable(true)
-            ->alwaysOnTop(false)
-            ->vibrancy('dark')
-            ->tooltip('Mission Control - Claude Code Sessions')
-            ->withContextMenu(
-                Menu::make(
-                    Menu::label('Mission Control'),
-                    Menu::separator(),
-                    Menu::link('https://github.com/croustibat/mission-control', 'GitHub'),
-                    Menu::separator(),
-                    Menu::quit(),
-                )
-            );
+            ->width(1000)
+            ->height(750)
+            ->minWidth(800)
+            ->minHeight(600)
+            ->resizable()
+            ->title('Mission Control')
+            ->titleBarHidden()
+            ->transparent()
+            ->vibrancy('dark');
     }
 
     /**

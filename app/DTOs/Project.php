@@ -20,6 +20,8 @@ class Project implements Wireable
         public ?string $lastMessageType = null,
         public string $status = 'idle',
         public string $icon = '📁',
+        public ?string $terminal = null,
+        public ?string $command = null,
     ) {}
 
     /**
@@ -38,6 +40,8 @@ class Project implements Wireable
             'lastMessageType' => $this->lastMessageType,
             'status' => $this->status,
             'icon' => $this->icon,
+            'terminal' => $this->terminal,
+            'command' => $this->command,
         ];
     }
 
@@ -57,6 +61,8 @@ class Project implements Wireable
             lastMessageType: $value['lastMessageType'] ?? null,
             status: $value['status'] ?? 'idle',
             icon: $value['icon'] ?? '📁',
+            terminal: $value['terminal'] ?? null,
+            command: $value['command'] ?? null,
         );
     }
 
@@ -89,18 +95,24 @@ class Project implements Wireable
     public function getMetric(): string
     {
         return match ($this->status) {
-            'active' => 'Running',
+            'running' => 'Running',
+            'asking_permission' => 'Asking',
+            'active' => 'Active',
             'blocked' => '1 question',
             'idle' => $this->getIdleTime(),
+            default => 'Unknown',
         };
     }
 
     public function getMetricLabel(): string
     {
         return match ($this->status) {
-            'active' => 'in progress',
+            'running' => 'in progress',
+            'asking_permission' => 'needs permission',
+            'active' => 'session open',
             'blocked' => 'waiting for response',
             'idle' => 'paused',
+            default => '',
         };
     }
 
@@ -114,15 +126,15 @@ class Project implements Wireable
         if ($diffHours < 1) {
             $diffMinutes = (int) $this->lastActivity->diffInMinutes(now());
 
-            return $diffMinutes . 'm idle';
+            return $diffMinutes.'m idle';
         }
         if ($diffHours < 24) {
-            return $diffHours . 'h idle';
+            return $diffHours.'h idle';
         }
 
         $diffDays = (int) $this->lastActivity->diffInDays(now());
 
-        return $diffDays . 'd idle';
+        return $diffDays.'d idle';
     }
 
     public function withStatus(string $status): self
@@ -138,6 +150,61 @@ class Project implements Wireable
             lastMessageType: $this->lastMessageType,
             status: $status,
             icon: $this->icon,
+            terminal: $this->terminal,
+            command: $this->command,
         );
+    }
+
+    public function withSessionData(?string $terminal, ?string $command): self
+    {
+        return new self(
+            id: $this->id,
+            name: $this->name,
+            path: $this->path,
+            claudeDataPath: $this->claudeDataPath,
+            gitBranch: $this->gitBranch,
+            lastActivity: $this->lastActivity,
+            lastMessage: $this->lastMessage,
+            lastMessageType: $this->lastMessageType,
+            status: $this->status,
+            icon: $this->icon,
+            terminal: $terminal ?? $this->terminal,
+            command: $command ?? $this->command,
+        );
+    }
+
+    public function getCommandLabel(): string
+    {
+        return match ($this->command) {
+            'opencode' => 'OpenCode',
+            'claude' => 'Claude',
+            default => 'CLI',
+        };
+    }
+
+    public function getTerminalLabel(): string
+    {
+        return match ($this->terminal) {
+            'warp' => 'Warp',
+            'zed' => 'Zed',
+            'vscode' => 'VS Code',
+            'cursor' => 'Cursor',
+            'terminal' => 'Terminal',
+            'iterm' => 'iTerm',
+            default => 'Terminal',
+        };
+    }
+
+    public function getTerminalIcon(): string
+    {
+        return match ($this->terminal) {
+            'warp' => '⚡',
+            'zed' => '⚡',
+            'vscode' => '💻',
+            'cursor' => '🖱️',
+            'terminal' => '🖥️',
+            'iterm' => '🖥️',
+            default => '🖥️',
+        };
     }
 }

@@ -11,6 +11,9 @@ Route::get('/', function () {
 Route::view('mission-control', 'pages.mission-control.index')
     ->name('mission-control');
 
+Route::view('mission-control/statistics', 'pages.mission-control.statistics')
+    ->name('mission-control.statistics');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
