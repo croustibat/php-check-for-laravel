@@ -1,5 +1,5 @@
 <?php
 
-use Croustibat\PhpCheckForLaravel\Tests\TestCase;
+use Croustibat\ComposerCheck\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

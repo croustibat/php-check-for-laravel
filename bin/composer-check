@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Croustibat\ComposerCheck\CheckCommand;
+use Symfony\Component\Console\Application;
+
+(static function (): void {
+    $autoloadPaths = [
+        __DIR__.'/../vendor/autoload.php',
+        __DIR__.'/../../../autoload.php',
+    ];
+
+    $autoloaderFound = false;
+    foreach ($autoloadPaths as $autoloadPath) {
+        if (file_exists($autoloadPath)) {
+            require_once $autoloadPath;
+            $autoloaderFound = true;
+            break;
+        }
+    }
+
+    if (! $autoloaderFound) {
+        fwrite(STDERR, "Could not find autoloader. Please run 'composer install'.\n");
+        exit(1);
+    }
+
+    $application = new Application('Composer Check', '2.0.0');
+    $application->add(new CheckCommand());
+    $application->setDefaultCommand('check', true);
+    $application->run();
+})();

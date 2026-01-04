@@ -6,7 +6,6 @@ parameters:
     paths:
         - src
         - config
-        - database
+    excludePaths:
+        - src/Laravel
     tmpDir: build/phpstan
-    checkOctaneCompatibility: true
-    checkModelProperties: true

@@ -1,14 +1,14 @@
-# PHP Check for Laravel
+# Composer Check
 
 > Interactive & CI-friendly tool to check and update outdated Composer dependencies
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/croustibat/php-check-for-laravel.svg?style=flat-square)](https://packagist.org/packages/croustibat/php-check-for-laravel)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/croustibat/php-check-for-laravel/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/croustibat/php-check-for-laravel/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/croustibat/php-check-for-laravel.svg?style=flat-square)](https://packagist.org/packages/croustibat/php-check-for-laravel)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/croustibat/composer-check.svg?style=flat-square)](https://packagist.org/packages/croustibat/composer-check)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/croustibat/composer-check/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/croustibat/composer-check/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/croustibat/composer-check.svg?style=flat-square)](https://packagist.org/packages/croustibat/composer-check)
 
-A Laravel package that provides both an **interactive CLI** for updating dependencies and a **CI-ready mode** for automated pipelines.
+A standalone CLI tool that provides both an **interactive mode** for updating dependencies and a **CI-ready mode** for automated pipelines. Works with any PHP project, with optional Laravel integration.
 
-![Interactive Mode Demo](https://github.com/croustibat/php-check-for-laravel/assets/1169456/9b97579e-6829-4729-8611-3428aae5c60d)
+![Interactive Mode Demo](https://github.com/croustibat/composer-check/assets/1169456/9b97579e-6829-4729-8611-3428aae5c60d)
 
 ## Features
 
@@ -19,35 +19,51 @@ A Laravel package that provides both an **interactive CLI** for updating depende
 - **Flexible Filters**: Filter by major, minor, or patch updates
 - **Ignore List**: Exclude specific packages from checks
 - **Configurable**: All options can be set via config file
+- **Framework Agnostic**: Works with any PHP project
+- **Laravel Integration**: Optional auto-discovered Artisan command
 
 ## Installation
 
 ```bash
-composer require croustibat/php-check-for-laravel
+composer require croustibat/composer-check
+```
+
+That's it! The tool is ready to use immediately.
+
+## Usage
+
+### Standalone CLI (any PHP project)
+
+```bash
+vendor/bin/composer-check
+```
+
+This opens an interactive prompt where you can select which packages to update.
+
+### Laravel Integration
+
+For Laravel projects, the package is auto-discovered. Use the Artisan command:
+
+```bash
+php artisan composer:check
 ```
 
 Optionally publish the config file:
 
 ```bash
-php artisan vendor:publish --tag="php-check-for-laravel-config"
+php artisan vendor:publish --tag="composer-check-config"
 ```
-
-## Usage
-
-### Interactive Mode (default)
-
-```bash
-php artisan package:check
-```
-
-This opens an interactive prompt where you can select which packages to update.
 
 ### CI Mode
 
 For use in CI/CD pipelines:
 
 ```bash
-php artisan package:check --ci
+# Standalone
+vendor/bin/composer-check --ci
+
+# Laravel
+php artisan composer:check --ci
 ```
 
 #### Exit Codes
@@ -72,6 +88,8 @@ php artisan package:check --ci
 | `--security` | Also check for security vulnerabilities |
 | `--fail-on-outdated` | Exit with code 1 if any packages are outdated |
 | `--fail-on-major` | Exit with code 1 if major updates exist |
+| `--ignore=<package>` | Packages to ignore (can be used multiple times) |
+| `--working-dir=<path>` | Working directory for composer commands |
 
 ## CI/CD Examples
 
@@ -100,10 +118,10 @@ jobs:
         run: composer install --no-interaction
       
       - name: Check for outdated packages
-        run: php artisan package:check --ci --format=markdown >> $GITHUB_STEP_SUMMARY
+        run: vendor/bin/composer-check --ci --format=markdown >> $GITHUB_STEP_SUMMARY
       
       - name: Fail on major updates
-        run: php artisan package:check --ci --fail-on-major
+        run: vendor/bin/composer-check --ci --fail-on-major
 ```
 
 ### GitLab CI
@@ -113,7 +131,7 @@ dependency-check:
   stage: test
   script:
     - composer install --no-interaction
-    - php artisan package:check --ci --fail-on-major --security
+    - vendor/bin/composer-check --ci --fail-on-major --security
   only:
     - schedules
 ```
@@ -121,7 +139,7 @@ dependency-check:
 ### JSON Output for Custom Processing
 
 ```bash
-php artisan package:check --ci --format=json
+vendor/bin/composer-check --ci --format=json
 ```
 
 Output:
@@ -146,8 +164,16 @@ Output:
 
 ## Configuration
 
+### Laravel Projects
+
+Publish and edit the config file:
+
+```bash
+php artisan vendor:publish --tag="composer-check-config"
+```
+
 ```php
-// config/php-check-for-laravel.php
+// config/composer-check.php
 
 return [
     'include_dev' => false,
@@ -167,32 +193,19 @@ return [
 ];
 ```
 
-## Programmatic Usage
+### Standalone Projects
 
-You can also use the package programmatically:
+For non-Laravel projects, use command-line options to configure behavior:
 
-```php
-use Croustibat\PhpCheckForLaravel\PhpCheckForLaravel;
+```bash
+# Include dev dependencies
+vendor/bin/composer-check --dev
 
-$checker = app(PhpCheckForLaravel::class);
+# Ignore specific packages
+vendor/bin/composer-check --ignore=vendor/package1 --ignore=vendor/package2
 
-// Get all outdated packages
-$outdated = $checker->getOutdatedPackages();
-
-// Check if there are any outdated packages
-if ($checker->hasOutdatedPackages()) {
-    // ...
-}
-
-// Check for major updates specifically
-if ($checker->hasMajorUpdates()) {
-    // ...
-}
-
-// Check for security vulnerabilities
-if ($checker->hasSecurityIssues()) {
-    // ...
-}
+# Check a different directory
+vendor/bin/composer-check --working-dir=/path/to/project
 ```
 
 ## Testing
