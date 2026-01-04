@@ -2,9 +2,15 @@
     "name": "croustibat/php-check-for-laravel",
     "description": "Interactive check for outdated composer dependencies",
     "keywords": [
-        "croustibat",
         "laravel",
-        "php-check-for-laravel"
+        "composer",
+        "dependencies",
+        "outdated",
+        "update",
+        "ci",
+        "security",
+        "audit",
+        "packages"
     ],
     "homepage": "https://github.com/croustibat/php-check-for-laravel",
     "license": "MIT",

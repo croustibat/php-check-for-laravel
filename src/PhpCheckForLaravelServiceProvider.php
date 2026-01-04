@@ -10,13 +10,14 @@ class PhpCheckForLaravelServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
         $package
             ->name('php-check-for-laravel')
+            ->hasConfigFile()
             ->hasCommand(PhpCheckCommand::class);
+    }
+
+    public function registeringPackage(): void
+    {
+        $this->app->singleton(PhpCheckForLaravel::class, fn () => new PhpCheckForLaravel);
     }
 }
